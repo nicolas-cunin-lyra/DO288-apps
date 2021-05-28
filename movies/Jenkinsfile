@@ -94,7 +94,8 @@ pipeline {
         }
 
         stage('Wait for deployment in DEV env') {
-            // Watch deployment until pod is in 'Running' state
+          // Watch deployment until pod is in 'Running' state
+          steps {
             script {
               openshift.withCluster() {
                 openshift.withProject(env.DEV_PROJECT) {
@@ -105,6 +106,7 @@ pipeline {
                 }
               }
             }
+          }
         }
 
         stage('Promote to Staging Env') {
@@ -114,7 +116,7 @@ pipeline {
                 }
                 script {
                     openshift.withCluster() {
-                    // Tag the ${APP_NAME}:latest image stream in the dev env as ${APP_NAME}:stage in staging
+                      // Tag the ${APP_NAME}:latest image stream in the dev env as ${APP_NAME}:stage in staging
                       openshift.withProject(env.DEV_PROJECT) {
                         openshift.tag("${DEV_PROJECT}/${APP_NAME}:latest", "${STAGE_PROJECT}/${APP_NAME}:stage")
                       }
